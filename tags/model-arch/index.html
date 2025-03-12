@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="robots" content="noindex"><meta><title>Tag: model arch - Chendong Xiang&#039;s Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Chendong Xiang"><meta name="msapplication-TileImage" content="/images/可爱玄策.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Chendong Xiang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="This is the personal page of Chendong Xiang"><meta property="og:type" content="blog"><meta property="og:title" content="Chendong Xiang&#039;s Blog"><meta property="og:url" content="https://xiang-cd.github.io/"><meta property="og:site_name" content="Chendong Xiang&#039;s Blog"><meta property="og:description" content="This is the personal page of Chendong Xiang"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xiang-cd.github.io/img/og_image.png"><meta property="article:author" content="Chendong Xiang"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://xiang-cd.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xiang-cd.github.io"},"headline":"Chendong Xiang's Blog","image":["https://xiang-cd.github.io/img/og_image.png"],"author":{"@type":"Person","name":"Chendong Xiang"},"publisher":{"@type":"Organization","name":"Chendong Xiang's Blog","logo":{"@type":"ImageObject","url":"https://xiang-cd.github.io/images/可爱玄策.png"}},"description":"This is the personal page of Chendong Xiang"}</script><link rel="icon" href="/images/%E5%8F%AF%E7%88%B1%E7%8E%84%E7%AD%96.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.1.1"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/images/%E5%8F%AF%E7%88%B1%E7%8E%84%E7%AD%96.png" alt="Chendong Xiang&#039;s Blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/cv">CV</a><a class="navbar-item" href="/blog">Blog</a><a class="navbar-item" href="/life">Life</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/all">All</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Xiang-cd"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">model arch</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2024-11-27T16:00:00.000Z" title="2024/11/28 00:00:00">2024-11-28</time></span><span class="level-item">Updated&nbsp;<time dateTime="2025-03-12T13:37:04.032Z" title="2025/3/12 21:37:04">2025-03-12</time></span><span class="level-item"><a class="link-muted" href="/blog/">blog</a></span><span class="level-item">12 minutes read (About 1766 words)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/blog/Emu3-practice/">Emu3-practice</a></p><div class="content"><p>最近北京智源放了一个模型叫做emu3，是一个多模态生成模型，恰巧机器学习课程需要有个project，然后就打算微调一下，体验一下AR model 的魅力。</p>
+<p>就causal transformer本身其实并不复杂，但是比较复杂或者我不太熟悉的应该是tokenizer，特别是视觉tokenizer是如何组织的，生成过程中如何保证图像规格，各类特殊token的作用，AR模型的CFG是如何在代码层面实现的等问题，所以这篇博客就是带着问题来寻找答案，并记录下来。</p>
+<h2 id="emu3的vision-tokenizer"><a href="#emu3的vision-tokenizer" class="headerlink" title="emu3的vision tokenizer"></a>emu3的vision tokenizer</h2><h3 id="vqvae"><a href="#vqvae" class="headerlink" title="vqvae"></a>vqvae</h3><p>本质上就是一个vqvae，但是要使得vae能够编解码视频，同时对视频在时间维度上的压缩做到4。对于原始的2Dvae的改进点在于，将res block中的2D conv换成causal 3Dconv，但是这些3Dconv并不同时压缩时间维度，只在2D维度完成压缩之后再单独进行两次的时间维度压缩，解码则是先扩展时间维度，然后再上采样空间维度。对于图片的处理，是将图片在时间维度重复四次作为视频进行压缩或者逆压缩， 重构后只取第一帧。</p>
+<h3 id="image-token和text-token的联合处理"><a href="#image-token和text-token的联合处理" class="headerlink" title="image token和text token的联合处理"></a>image token和text token的联合处理</h3><p>这里我想弄明白的是，vision token和text token是如何share code book的。在emu3中，主要通过Emu3Processor这个类来实现，初始化传入图片预处理器，vqvae以及text tokenizer。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">processor = Emu3Processor(image_processor, image_tokenizer, tokenizer)</span><br></pre></td></tr></table></figure>
+
+<p>其中最重要的函数是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">visual_template=(<span class="string">"&lt;|visual token {token_id:0&gt;6d}|&gt;"</span>, <span class="string">r"&lt;\|visual token (\d+)\|&gt;"</span>)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">to_imgstr</span>(<span class="params">self, image_tokens</span>):</span><br><span class="line">    image_tokens = image_tokens.cpu().numpy().tolist()</span><br><span class="line">    image_token_str = [</span><br><span class="line">        [</span><br><span class="line">            self.visual_template[<span class="number">0</span>].<span class="built_in">format</span>(token_id=token_id)</span><br><span class="line">            <span class="keyword">for</span> token_id <span class="keyword">in</span> token_row</span><br><span class="line">        ]</span><br><span class="line">        <span class="keyword">for</span> token_row <span class="keyword">in</span> image_tokens</span><br><span class="line">    ]</span><br><span class="line">    image_row_str = [<span class="string">""</span>.join(token_row) <span class="keyword">for</span> token_row <span class="keyword">in</span> image_token_str]</span><br><span class="line">    imgstr = self.tokenizer.eol_token.join(image_row_str)</span><br><span class="line">    <span class="keyword">return</span> imgstr</span><br></pre></td></tr></table></figure>
+
+<p>以上函数说明白了两个问题：</p>
+<ol>
+<li>视觉token到文本token的转化。视觉token会被转化为’&lt;|visual token 000000|&gt;’ 这样的文本token，这在文本tokenizer中相当于第151854个token，依次增长，也就是前151853个是普通本文token，后面的依次是视觉token。完成了token的映射。</li>
+<li>视觉token的编排。可见，图像的编码是通过换行来进行的，没有对图像token做2D的位置编码，这和文章表述一致。</li>
+</ol>
+<h2 id="如何保证图像生成规格"><a href="#如何保证图像生成规格" class="headerlink" title="如何保证图像生成规格"></a>如何保证图像生成规格</h2><p>这里我想解决的问题是，AR模型生成token是估计token的概率分布，这意味着对于一个64X64的图片生成过程，模型可能在生成过程中第一行生成了64个visual token，第二行生成了67个visual token，这会导致图片并不规格。</p>
+<p>对此，emu3的解决方案是约束当前token生成的范围，例如到了第65个token，则严格限制只能生成换行符号，具体的代码实现是通过传递一个PrefixConstrainedLogitsProcessor，并对这个类传递一个判断生成状态的函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">constrained_fn = processor.build_prefix_constrained_fn(h, w)</span><br><span class="line">PrefixConstrainedLogitsProcessor(</span><br><span class="line">        constrained_fn ,</span><br><span class="line">        num_beams=<span class="number">1</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>最核心的判断逻辑在：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Emu3PrefixConstrainedLogitsHelper</span>:</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        height,</span></span><br><span class="line"><span class="params">        width,</span></span><br><span class="line"><span class="params">        img_token,</span></span><br><span class="line"><span class="params">        eoi_token,</span></span><br><span class="line"><span class="params">        eos_token,</span></span><br><span class="line"><span class="params">        eol_token,</span></span><br><span class="line"><span class="params">        eof_token,</span></span><br><span class="line"><span class="params">        pad_token,</span></span><br><span class="line"><span class="params">        visual_tokens,</span></span><br><span class="line"><span class="params">    </span>):</span><br><span class="line">        self.height = height</span><br><span class="line">        self.width = width</span><br><span class="line">        self.img_token = img_token</span><br><span class="line">        self.eoi_token = eoi_token</span><br><span class="line">        self.eos_token = eos_token</span><br><span class="line">        self.eol_token = eol_token</span><br><span class="line">        self.eof_token = eof_token</span><br><span class="line">        self.pad_token = pad_token</span><br><span class="line">        self.visual_tokens = visual_tokens</span><br><span class="line"></span><br><span class="line">        self.offset_cache = {}</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, batch_id, input_ids</span>):</span><br><span class="line">        <span class="keyword">if</span> batch_id <span class="keyword">not</span> <span class="keyword">in</span> self.offset_cache:</span><br><span class="line">            position = torch.nonzero(input_ids == self.img_token, as_tuple=<span class="literal">True</span>)[<span class="number">0</span>][<span class="number">0</span>]</span><br><span class="line">            self.offset_cache[batch_id] = position</span><br><span class="line"></span><br><span class="line">        height = self.height[batch_id] <span class="keyword">if</span> self.height.shape[<span class="number">0</span>] &gt; <span class="number">1</span> <span class="keyword">else</span> self.height[<span class="number">0</span>]</span><br><span class="line">        width = self.width[batch_id] <span class="keyword">if</span> self.width.shape[<span class="number">0</span>] &gt; <span class="number">1</span> <span class="keyword">else</span> self.width[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">        offset = input_ids.shape[<span class="number">0</span>] - self.offset_cache[batch_id]</span><br><span class="line">        height = height.to(offset.device)</span><br><span class="line">        width = width.to(offset.device)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> offset % (width + <span class="number">1</span>) == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> (self.eol_token, )</span><br><span class="line">        <span class="keyword">elif</span> offset == (width + <span class="number">1</span>) * height + <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> (self.eof_token, )</span><br><span class="line">        <span class="keyword">elif</span> offset == (width + <span class="number">1</span>) * height + <span class="number">2</span>:</span><br><span class="line">            <span class="keyword">return</span> (self.eoi_token, )</span><br><span class="line">        <span class="keyword">elif</span> offset == (width + <span class="number">1</span>) * height + <span class="number">3</span>:</span><br><span class="line">            <span class="keyword">return</span> (self.eos_token, )</span><br><span class="line">        <span class="keyword">elif</span> offset &gt; (width + <span class="number">1</span>) * height + <span class="number">3</span>:</span><br><span class="line">            <span class="keyword">return</span> (self.pad_token, )</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> self.visual_tokens</span><br></pre></td></tr></table></figure>
+
+<p>可见的，这个prefixconstrain导致了当前的生成策略只能生成一张图片。</p>
+<p>根据文章和初步的代码判断，最终的token排列情况应当如下：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[<span class="variable constant_">BOS</span>] </span><br><span class="line">	{caption text}  <span class="comment">// caption text tokens</span></span><br><span class="line">	[<span class="variable constant_">SOV</span>{boi}] <span class="string">"{H}*{W}"</span>   <span class="comment">// h * w are meta info tokens</span></span><br><span class="line">		[<span class="variable constant_">SOT</span>{img_token}] </span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}] <span class="comment">// end of line </span></span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}] <span class="comment">// vs are vision tokens</span></span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}]</span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}]</span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}]</span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}]</span><br><span class="line">		[<span class="variable constant_">EOF</span>] <span class="comment">// end of frame</span></span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}] <span class="comment">// end of line </span></span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}] <span class="comment">// vs are vision tokens</span></span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}]</span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}]</span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}]</span><br><span class="line">		[vs] [vs] [vs] [vs] [vs] [vs] [<span class="variable constant_">EOL</span>{eol}]</span><br><span class="line">		[<span class="variable constant_">EOF</span>] <span class="comment">// end of frame</span></span><br><span class="line">	[<span class="variable constant_">EOV</span>{eoi}] </span><br><span class="line">[<span class="variable constant_">EOS</span>]</span><br></pre></td></tr></table></figure>
+
+<p>为了能够让模型实现多帧的生成，可以简单对constrain做简单的修改，并增加新的帧数量的超参。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Emu3PrefixConstrainedLogitsHelper</span>:</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        height,</span></span><br><span class="line"><span class="params">        width,</span></span><br><span class="line"><span class="params">        img_token,</span></span><br><span class="line"><span class="params">        eoi_token,</span></span><br><span class="line"><span class="params">        eos_token,</span></span><br><span class="line"><span class="params">        eol_token,</span></span><br><span class="line"><span class="params">        eof_token,</span></span><br><span class="line"><span class="params">        pad_token,</span></span><br><span class="line"><span class="params">        visual_tokens,</span></span><br><span class="line"><span class="params">        num_frame=<span class="number">1</span>,</span></span><br><span class="line"><span class="params">    </span>):</span><br><span class="line">        self.height = height</span><br><span class="line">        self.width = width</span><br><span class="line">        self.img_token = img_token</span><br><span class="line">        self.eoi_token = eoi_token</span><br><span class="line">        self.eos_token = eos_token</span><br><span class="line">        self.eol_token = eol_token</span><br><span class="line">        self.eof_token = eof_token</span><br><span class="line">        self.pad_token = pad_token</span><br><span class="line">        self.visual_tokens = visual_tokens</span><br><span class="line">        self.num_frame = num_frame</span><br><span class="line"></span><br><span class="line">        self.offset_cache = {}</span><br><span class="line">        self.frame_index_cache = {}</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, batch_id, input_ids</span>):</span><br><span class="line">        <span class="keyword">if</span> batch_id <span class="keyword">not</span> <span class="keyword">in</span> self.offset_cache:</span><br><span class="line">            position = torch.nonzero(input_ids == self.img_token, as_tuple=<span class="literal">True</span>)[<span class="number">0</span>][<span class="number">0</span>]</span><br><span class="line">            self.offset_cache[batch_id] = position</span><br><span class="line">            self.frame_index_cache[batch_id] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        height = self.height[batch_id] <span class="keyword">if</span> self.height.shape[<span class="number">0</span>] &gt; <span class="number">1</span> <span class="keyword">else</span> self.height[<span class="number">0</span>]</span><br><span class="line">        width = self.width[batch_id] <span class="keyword">if</span> self.width.shape[<span class="number">0</span>] &gt; <span class="number">1</span> <span class="keyword">else</span> self.width[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">        offset = input_ids.shape[<span class="number">0</span>] - self.offset_cache[batch_id]</span><br><span class="line">        height = height.to(offset.device)</span><br><span class="line">        width = width.to(offset.device)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (offset - self.frame_index_cache[batch_id]) % (width + <span class="number">1</span>) == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> (self.eol_token, )</span><br><span class="line">        <span class="keyword">elif</span> offset % ((width + <span class="number">1</span>) * height + <span class="number">1</span>) == <span class="number">0</span>:</span><br><span class="line">            self.frame_index_cache[batch_id] += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> (self.eof_token, )</span><br><span class="line">        <span class="keyword">elif</span> offset == ((width + <span class="number">1</span>) * height + <span class="number">1</span>) * self.num_frame + <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> (self.eoi_token, )</span><br><span class="line">        <span class="keyword">elif</span> offset == ((width + <span class="number">1</span>) * height + <span class="number">1</span>) * self.num_frame + <span class="number">2</span>:</span><br><span class="line">            <span class="keyword">return</span> (self.eos_token, )</span><br><span class="line">        <span class="keyword">elif</span> offset &gt; ((width + <span class="number">1</span>) * height + <span class="number">1</span>) * self.num_frame + <span class="number">3</span>:</span><br><span class="line">            <span class="keyword">return</span> (self.pad_token, )</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> self.visual_tokens</span><br></pre></td></tr></table></figure>
+
+<h2 id="如何进行CFG"><a href="#如何进行CFG" class="headerlink" title="如何进行CFG"></a>如何进行CFG</h2><p>在扩散模型中，classifier free guidance(CFG)就是对于模型的条件和无条件预测进行线性加权外推，使得模型朝着条件方向进行前进，其中包含一个超参guidance scale，具体公式如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new_pred = pred_uncond + guidance_scale * (pred_cond - pred_uncond)</span><br></pre></td></tr></table></figure>
+
+<p>这在扩散模型中能够显著提高生成质量，在AR模型用于视觉生成也被证明能够提高生成质量。在AR模型中，比较重要的是在哪个空间进行CFG，是在logits（未归一化），还是在归一化（softmax）之后的空间，还是在对数归一化（log_softmax)空间。</p>
+<p>在emu3的代码中，实现CFG的代码位于UnbatchedClassifierFreeGuidanceLogitsProcessor这个类中。核心代码如下：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def <span class="title function_">__call__</span>(self, input_ids, scores):</span><br><span class="line">    scores = torch.<span class="property">nn</span>.<span class="property">functional</span>.<span class="title function_">log_softmax</span>(scores, dim=-<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> self.<span class="property">guidance_scale</span> == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> scores</span><br><span class="line"></span><br><span class="line">    logits = self.<span class="title function_">get_unconditional_logits</span>(input_ids)</span><br><span class="line"></span><br><span class="line">    unconditional_logits = torch.<span class="property">nn</span>.<span class="property">functional</span>.<span class="title function_">log_softmax</span>(logits[:, -<span class="number">1</span>], dim=-<span class="number">1</span>)</span><br><span class="line">    scores_processed = self.<span class="property">guidance_scale</span> * (scores - unconditional_logits) + unconditional_logits</span><br><span class="line">    <span class="keyword">return</span> scores_processed</span><br></pre></td></tr></table></figure>
+
+<p>可见，CFG在对数归一化空间进行。</p>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/images/%E5%8F%AF%E7%88%B1%E7%8E%84%E7%AD%96.png" alt="Chendong Xiang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Chendong Xiang</p><p class="is-size-6 is-block">AI Researcher</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">8</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">2</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">4</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/Xiang-cd" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/Xiang-cd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com/xiangxiaoyuaw"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="LinkedIn" href="https://www.linkedin.com/in/%E6%99%A8%E4%B8%9C-%E9%A1%B9-3401a0199/"><i class="fab fa-linkedin"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/thu-ml/CRM" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">CRM</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li><li><a class="level is-mobile" href="https://github.com/Xiang-cd/FeedFace" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">FeedFace</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li><li><a class="level is-mobile" href="https://cond-image-leak.github.io/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Cond Image Leak</span></span><span class="level-right"><span class="level-item tag">cond-image-leak.github.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/blog/"><span class="level-start"><span class="level-item">blog</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/life/"><span class="level-start"><span class="level-item">life</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-11-27T16:00:00.000Z">2024-11-28</time></p><p class="title"><a href="/blog/Emu3-practice/">Emu3-practice</a></p><p class="categories"><a href="/blog/">blog</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-10-21T16:00:00.000Z">2024-10-22</time></p><p class="title"><a href="/life/canada-visa/">加拿大签证记</a></p><p class="categories"><a href="/life/">life</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-09-30T16:00:00.000Z">2024-10-01</time></p><p class="title"><a href="/life/italy-visa/">意大利签证记</a></p><p class="categories"><a href="/life/">life</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-04-24T10:59:08.000Z">2024-04-24</time></p><p class="title"><a href="/blog/Sora-authors/">Sora authors</a></p><p class="categories"><a href="/blog/">blog</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-04-21T10:11:28.000Z">2024-04-21</time></p><p class="title"><a href="/blog/sequence-parallel/">sequence parallel</a></p><p class="categories"><a href="/blog/">blog</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2024/11/"><span class="level-start"><span class="level-item">November 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/10/"><span class="level-start"><span class="level-item">October 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/04/"><span class="level-start"><span class="level-item">April 2024</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/03/"><span class="level-start"><span class="level-item">March 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/career/"><span class="tag">career</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/mlsys/"><span class="tag">mlsys</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/model-arch/"><span class="tag">model arch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/test/"><span class="tag">test</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/images/%E5%8F%AF%E7%88%B1%E7%8E%84%E7%AD%96.png" alt="Chendong Xiang&#039;s Blog" height="28"></a><p class="is-size-7"><span>&copy; 2025 Chendong Xiang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

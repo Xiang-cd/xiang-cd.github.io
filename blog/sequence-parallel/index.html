@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>sequence parallel - Chendong Xiang&#039;s Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Chendong Xiang"><meta name="msapplication-TileImage" content="/images/可爱玄策.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Chendong Xiang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="前言随着Sora和kimi的大火, 视频模型和超长序列语言模型的实践不断被人们摆到更重要的位置, 这篇博客主要从需求和基本思路以及实践这几个方面来讲解一下序列并行相关的内容。 需求从产品需求的角度看, 长序列是必然的需求。从语言模型看,  做超长文本检索以及摘要有确定的需求(例如平时看文献)。sora能够生成超长视频, 在使用vanilla attention的情况下, attention的序列长"><meta property="og:type" content="blog"><meta property="og:title" content="sequence parallel"><meta property="og:url" content="https://xiang-cd.github.io/blog/sequence-parallel/"><meta property="og:site_name" content="Chendong Xiang&#039;s Blog"><meta property="og:description" content="前言随着Sora和kimi的大火, 视频模型和超长序列语言模型的实践不断被人们摆到更重要的位置, 这篇博客主要从需求和基本思路以及实践这几个方面来讲解一下序列并行相关的内容。 需求从产品需求的角度看, 长序列是必然的需求。从语言模型看,  做超长文本检索以及摘要有确定的需求(例如平时看文献)。sora能够生成超长视频, 在使用vanilla attention的情况下, attention的序列长"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xiang-cd.github.io/blog/sequence-parallel/ring1.png"><meta property="og:image" content="https://xiang-cd.github.io/blog/sequence-parallel/ring2.png"><meta property="og:image" content="https://xiang-cd.github.io/blog/sequence-parallel/ulyss.png"><meta property="article:published_time" content="2024-04-21T10:11:28.000Z"><meta property="article:modified_time" content="2025-03-12T13:28:56.250Z"><meta property="article:author" content="Chendong Xiang"><meta property="article:tag" content="mlsys"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://xiang-cd.github.io/blog/sequence-parallel/ring1.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xiang-cd.github.io/blog/sequence-parallel/"},"headline":"sequence parallel","image":["https://xiang-cd.github.io/blog/sequence-parallel/ring1.png","https://xiang-cd.github.io/blog/sequence-parallel/ring2.png","https://xiang-cd.github.io/blog/sequence-parallel/ulyss.png"],"datePublished":"2024-04-21T10:11:28.000Z","dateModified":"2025-03-12T13:28:56.250Z","author":{"@type":"Person","name":"Chendong Xiang"},"publisher":{"@type":"Organization","name":"Chendong Xiang's Blog","logo":{"@type":"ImageObject","url":"https://xiang-cd.github.io/images/可爱玄策.png"}},"description":"前言随着Sora和kimi的大火, 视频模型和超长序列语言模型的实践不断被人们摆到更重要的位置, 这篇博客主要从需求和基本思路以及实践这几个方面来讲解一下序列并行相关的内容。 需求从产品需求的角度看, 长序列是必然的需求。从语言模型看,  做超长文本检索以及摘要有确定的需求(例如平时看文献)。sora能够生成超长视频, 在使用vanilla attention的情况下, attention的序列长"}</script><link rel="canonical" href="https://xiang-cd.github.io/blog/sequence-parallel/"><link rel="icon" href="/images/%E5%8F%AF%E7%88%B1%E7%8E%84%E7%AD%96.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.1.1"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/images/%E5%8F%AF%E7%88%B1%E7%8E%84%E7%AD%96.png" alt="Chendong Xiang&#039;s Blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/cv">CV</a><a class="navbar-item" href="/blog">Blog</a><a class="navbar-item" href="/life">Life</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/all">All</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Xiang-cd"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2024-04-21T10:11:28.000Z" title="2024/4/21 18:11:28">2024-04-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2025-03-12T13:28:56.250Z" title="2025/3/12 21:28:56">2025-03-12</time></span><span class="level-item"><a class="link-muted" href="/blog/">blog</a></span><span class="level-item">17 minutes read (About 2536 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">sequence parallel</h1><div class="content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>随着Sora和kimi的大火, 视频模型和超长序列语言模型的实践不断被人们摆到更重要的位置, 这篇博客主要从需求和基本思路以及实践这几个方面来讲解一下序列并行相关的内容。</p>
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>从产品需求的角度看, 长序列是必然的需求。从语言模型看,  做超长文本检索以及摘要有确定的需求(例如平时看文献)。sora能够生成超长视频, 在使用vanilla attention的情况下, attention的序列长度将为(T, H, W), 也就是时长, 高度, 宽度三者的乘积增长, 序列长度比图像模型上一个量级, 这也一定会成为sora训练和推理的难题。尽管当前的flash attention的显存消耗能够被优化到线性增长的程度, 但是当序列长度足够长, 显存依然可能不够。</p>
+<p>就此, </p>
+<ul>
+<li>我们的问题被定义为: 如何让transformer支持超长序列的训练和推理</li>
+<li>问题的核心: 来源于显存装不下超长序列带来的显存需求, 而非模型太大带来的显存溢出</li>
+<li>可能方法:  优化显存或者使用多GPU并行计算分摊显存和计算</li>
+</ul>
+<h2 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h2><p>首先我们需要将一句话铭记于心, 默念三遍:</p>
+<blockquote>
+<p>transformer模型中, 序列的概念仅在attention这个操作中被需要, 在做MLP等其他操作时, 打乱序列甚至打乱batch都是可以的, 只要在attention操作时将序列顺序恢复即可。</p>
+</blockquote>
+<p>对于超长序列支持问题, 可能最直接的想法就是使用张量并行,  将模型切分, 对应的序列也在(B, L, D)的D维度被切分, 从而可以节省显存。</p>
+<p>但是需要注意的是, 我们遇到的问题是来自于序列过长, 而模型并非过大, 特别是diffusion的模型都还非常小, 一张显卡放的下。其次, 使用模型并行中途计算需要的通信同步开销较大, 小模型做张量并行不值得。</p>
+<p>再次回想我们铭记于心的话, 我们可以思考, 可否将序列(B, L, D) 在L维度切分, 在多张卡上做MLP等和序列无关的操作(无需通信), 在做attention时将相关的内容从其他GPU获取, 再进行attention操作, 再将计算结果同步到其他GPU上。这样比张量并行的好处在于无需切分模型, 减少通信量, 提高模型的吞吐与性能。</p>
+<h2 id="基本实现"><a href="#基本实现" class="headerlink" title="基本实现"></a>基本实现</h2><p>接下来介绍几个实现了序列并行的库或者算法:</p>
+<h3 id="约定"><a href="#约定" class="headerlink" title="约定"></a>约定</h3><ul>
+<li>B: batch size</li>
+<li>L: seq len</li>
+<li>D: hidden dim</li>
+<li>A: attention head size</li>
+<li>Z: number of attention heads</li>
+<li>N: number of  GPU</li>
+<li>Z x A = D</li>
+</ul>
+<p>N个GPU上存储了(B, L/N, D)的序列, 给出在分布式情况下计算self attention的算法。</p>
+<h3 id="Ring-self-attention-RSA"><a href="#Ring-self-attention-RSA" class="headerlink" title="Ring self attention(RSA)"></a>Ring self attention(RSA)</h3><p>这样的方式是通过在query的L维度上切分进行分布式的attention的计算。通信的方式是通过进程之间换装传递K和V的分块然后得到最后的计算结果, 这样的算法不受到Z大小的限制, 对GPU的数量是可扩展的。</p>
+<p>第一阶段-环状传递分块的K来得到attention map</p>
+<p><img src="/blog/sequence-parallel/ring1.png" alt="Untitled"></p>
+<p>第二阶段-环状传递分块的V得到最后的结果</p>
+<p><img src="/blog/sequence-parallel/ring2.png" alt="Untitled"></p>
+<p>通俗的理解ring attention的机制, 其核心的并行的点在于, attention的计算是可以在query的sequence lens的维度上分块的, 也就是一部分的query和完整的key和value就可以得出此部分qeury对应的计算结果。而由于序列过长, key和value也被打散在不同进程中, 所以需要从其他进程不断传递并计算从而得到完整的key和value以得到最终结果。</p>
+<p>不断集齐key和value这样的过程, 最简单的方式就是通过进程顺序点到点的方式完成, 显然这样的效率是不够高的, 在传递过程中如何尽量把各个节点之间的带宽利用好, 同时做好计算和通信的重叠, 而ring的方式就是系统领域典型的算法和方式, 能够做到较好的利用带宽, 在有良好的实线的情况下, 可以做到计算和通信的重叠。</p>
+<h3 id="Deepspeed-ulyss"><a href="#Deepspeed-ulyss" class="headerlink" title="Deepspeed ulyss"></a>Deepspeed ulyss</h3><p>Attention的另外一种并行方式就是类似于张量并行的按照Attention head进行切分。也就是每个进程拥有完整的序列长度, 但是只有一部分的head个数, 这样同样能够节省显存, 而且这样的方法可以做到不改变Attention的实现, 也就是任何的attention算法都和Deepspeed ulyss兼容。但是缺点是并行的卡的数量不超过头的个数Z。</p>
+<p><img src="/blog/sequence-parallel/ulyss.png" alt="Untitled"></p>
+<p>序列并行要求在MLP层无额外的操作,  所以每个进程中应该有部分的序列, 但是包含完整的attention head, 在进行attention并行时, 又要求每个进程需要完整的序列且是部分的头。所以可以遇见的是在进行attention操作前, 通过通信算子使得每个进程拥有(B, L/N, ZxA) 转化到每个进程拥有(B, L, ZxA/N)的序列内容。attention 操作结束后, 再通过通信算子使得每个进程从拥有(B, L, ZxA/N)的序列内容转化为(B, L/N, ZXA)的序列内容。课件仅需要操作开始前, 结束后需要进行通信, attention的算子是完全独立的, 所以可以采用任意attention算子的实现。</p>
+<p>Deepspeed ulyss的实现也非常简洁, 通过源代码就可以看到:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># https://github.com/microsoft/DeepSpeed/blob/master/deepspeed/sequence/layer.py</span></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Any</span>, <span class="type">Tuple</span></span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> Tensor</span><br><span class="line"><span class="keyword">from</span> torch.nn <span class="keyword">import</span> Module</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> deepspeed.comm <span class="keyword">as</span> dist</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">single_all_to_all</span>(<span class="params"><span class="built_in">input</span>, scatter_idx, gather_idx, group</span>):</span><br><span class="line">    seq_world_size = dist.get_world_size(group)</span><br><span class="line">    inp_shape = <span class="built_in">list</span>(<span class="built_in">input</span>.shape)</span><br><span class="line">    inp_shape[scatter_idx] = inp_shape[scatter_idx] // seq_world_size</span><br><span class="line">    <span class="keyword">if</span> scatter_idx &lt; <span class="number">2</span>:</span><br><span class="line">        input_t = <span class="built_in">input</span>.reshape(</span><br><span class="line">            [seq_world_size, inp_shape[scatter_idx]] + \</span><br><span class="line">            inp_shape[scatter_idx + <span class="number">1</span>:]</span><br><span class="line">        ).contiguous()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># transpose groups of heads with the seq-len parallel dimension, so that we can scatter them!</span></span><br><span class="line">        input_t = <span class="built_in">input</span>.reshape(</span><br><span class="line">            [-<span class="number">1</span>, seq_world_size, inp_shape[scatter_idx]] + \</span><br><span class="line">            inp_shape[scatter_idx + <span class="number">1</span>:]</span><br><span class="line">        ).transpose(<span class="number">0</span>, <span class="number">1</span>).contiguous()</span><br><span class="line"></span><br><span class="line">    output = torch.empty_like(input_t)</span><br><span class="line">    dist.all_to_all_single(output, input_t, group=group)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># if scattering the seq-dim, transpose the heads back to the original dimension</span></span><br><span class="line">    <span class="keyword">if</span> scatter_idx &lt; <span class="number">2</span>:</span><br><span class="line">        output = output.transpose(<span class="number">0</span>, <span class="number">1</span>).contiguous()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> output.reshape(</span><br><span class="line">        inp_shape[: gather_idx] + \</span><br><span class="line">        [inp_shape[gather_idx] * seq_world_size,] + \</span><br><span class="line">        inp_shape[gather_idx + <span class="number">1</span>:]).contiguous()</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">_SeqAllToAll</span>(torch.autograd.Function):</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">ctx: <span class="type">Any</span>, group: dist.ProcessGroup, <span class="built_in">input</span>: Tensor, scatter_idx: <span class="built_in">int</span>, gather_idx: <span class="built_in">int</span></span>) -&gt; Tensor:</span><br><span class="line"></span><br><span class="line">        ctx.group = group</span><br><span class="line">        ctx.scatter_idx = scatter_idx</span><br><span class="line">        ctx.gather_idx = gather_idx</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> single_all_to_all(<span class="built_in">input</span>, scatter_idx, gather_idx, group)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">backward</span>(<span class="params">ctx: <span class="type">Any</span>, *grad_output: Tensor</span>) -&gt; <span class="type">Tuple</span>[<span class="literal">None</span>, Tensor, <span class="literal">None</span>, <span class="literal">None</span>]:</span><br><span class="line">        <span class="keyword">return</span> (<span class="literal">None</span>, _SeqAllToAll.apply(ctx.group, *grad_output, ctx.gather_idx, ctx.scatter_idx), <span class="literal">None</span>, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DistributedAttention</span>(torch.nn.Module):</span><br><span class="line">    <span class="string">"""Initialization.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">        local_attention (Module): local attention with q,k,v</span></span><br><span class="line"><span class="string">        sequence_process_group (ProcessGroup): sequence parallel process group</span></span><br><span class="line"><span class="string">        scatter_idx (int): scatter_idx for all2all comm</span></span><br><span class="line"><span class="string">        gather_idx (int): gather_idx for all2all comm</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        local_attention: Module,</span></span><br><span class="line"><span class="params">        sequence_process_group: dist.ProcessGroup,</span></span><br><span class="line"><span class="params">        scatter_idx: <span class="built_in">int</span> = <span class="number">2</span>,</span></span><br><span class="line"><span class="params">        gather_idx: <span class="built_in">int</span> = <span class="number">0</span>,</span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="literal">None</span>:</span><br><span class="line"></span><br><span class="line">        <span class="built_in">super</span>(DistributedAttention, self).__init__()</span><br><span class="line">        self.local_attn = local_attention</span><br><span class="line">        self.spg = sequence_process_group</span><br><span class="line">        self.scatter_idx = scatter_idx</span><br><span class="line">        self.gather_idx = gather_idx</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, query: Tensor, key: Tensor, value: Tensor, *args: <span class="type">Any</span></span>) -&gt; Tensor:</span><br><span class="line">        <span class="string">""" forward</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Arguments:</span></span><br><span class="line"><span class="string">            query (Tensor): query input to the layer</span></span><br><span class="line"><span class="string">            key (Tensor): key input to the layer</span></span><br><span class="line"><span class="string">            value (Tensor): value input to the layer</span></span><br><span class="line"><span class="string">            args: other args</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">            * output (Tensor): context output</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="comment"># TODO Merge three alltoall calls into one</span></span><br><span class="line">        <span class="comment"># TODO (Reza): change the api on the megatron-deepspeed side so that we only receive all data (q,k, and v) together!</span></span><br><span class="line">        <span class="comment">#in shape : e.g.,  [s/p:h:]</span></span><br><span class="line">        query_layer = _SeqAllToAll.apply(self.spg, query, self.scatter_idx, self.gather_idx)</span><br><span class="line">        key_layer = _SeqAllToAll.apply(self.spg, key, self.scatter_idx, self.gather_idx)</span><br><span class="line">        value_layer = _SeqAllToAll.apply(self.spg, value, self.scatter_idx, self.gather_idx)</span><br><span class="line"></span><br><span class="line">        <span class="comment">#out shape : e.g., [s:h/p:]</span></span><br><span class="line">        context_layer = self.local_attn(query_layer, key_layer, value_layer, *args)</span><br><span class="line"></span><br><span class="line">        output = _SeqAllToAll.apply(self.spg, context_layer, self.gather_idx, self.scatter_idx)</span><br><span class="line"></span><br><span class="line">        <span class="comment">#out e.g., [s/p::h]</span></span><br><span class="line">        <span class="keyword">return</span> output</span><br></pre></td></tr></table></figure>
+
+<p>核心实现就是<code>_SeqAllToAll</code>这个函数的实现, 给定group, 在forward的时候通过通信将当前进程需要的序列聚积到当前进程, 在backward时, 我们通过后层收到的梯度也应该通过通信分发到正确的进程中, 并从别的进程中取到属于自己进程内容的梯度。以q, k, v的通信算子举例:</p>
+<ul>
+<li>forward时, 进程拥有(B, L/N, ZxA) 的序列内容, 通信后进程拥有(B, L, ZxA/N)</li>
+<li>backward时, 进程收到的梯度是(B, L, ZxA/N)内容的梯度, 但是本进程需要正确回传的梯度是(B, L/N, ZxA) 序列的梯度, 所以通过同样的算法得到正确的梯度</li>
+</ul>
+<p>对于通信的算子, 最简单的算子就是AlltoAll, 使得每个进程在某个瞬间拥有(B, L, ZxA)的序列, 然后丢弃不需要的部分进行计算, 显然这样的方式会出现不必要的显存分配, 没有做到足够优雅的节省显存问题, 所以deepspeed使用的事AlltoAll_single这样的通信算子, 可以理解为将张量内容在进程间的某两个维度进行转置, 通信过程无需分配很多内容, 进一步提高效率。为了大家对AlltoAll_single有更好的理解, 这里附上pytorch对应算子的文档:</p>
+<blockquote>
+<p><strong>torch.distributed.all_to_all_single(<em>output</em>, <em>input</em>, <em>output_split_sizes=None</em>, <em>input_split_sizes=None</em>, <em>group=None</em>, <em>async_op=False</em>)</strong></p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">input</span> = torch.arange(<span class="number">4</span>) + rank * <span class="number">4</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">input</span></span><br><span class="line">tensor([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])     <span class="comment"># Rank 0</span></span><br><span class="line">tensor([<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>])     <span class="comment"># Rank 1</span></span><br><span class="line">tensor([<span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>])   <span class="comment"># Rank 2</span></span><br><span class="line">tensor([<span class="number">12</span>, <span class="number">13</span>, <span class="number">14</span>, <span class="number">15</span>]) <span class="comment"># Rank 3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>output = torch.empty([<span class="number">4</span>], dtype=torch.int64)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>dist.all_to_all_single(output, <span class="built_in">input</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>output</span><br><span class="line">tensor([<span class="number">0</span>, <span class="number">4</span>, <span class="number">8</span>, <span class="number">12</span>])    <span class="comment"># Rank 0</span></span><br><span class="line">tensor([<span class="number">1</span>, <span class="number">5</span>, <span class="number">9</span>, <span class="number">13</span>])    <span class="comment"># Rank 1</span></span><br><span class="line">tensor([<span class="number">2</span>, <span class="number">6</span>, <span class="number">10</span>, <span class="number">14</span>])   <span class="comment"># Rank 2</span></span><br><span class="line">tensor([<span class="number">3</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">15</span>])   <span class="comment"># Rank 3</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文介绍了序列并行解决的问题, 以及两种主流的实现序列并行的方式。其实两种序列并行可以混合使用, 从而达到更好的并行度和性能。同时在语言模型中, 带causal mask的情况下, 简单的序列切分会导致进程间计算负载不均衡, 随后衍生出<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.09431">striped attention</a>。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>sequence parallel</p><p><a href="https://xiang-cd.github.io/blog/sequence-parallel/">https://xiang-cd.github.io/blog/sequence-parallel/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Chendong Xiang</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2024-04-21</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2025-03-12</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/mlsys/">mlsys</a></div><!--!--></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/images/%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%B6%E6%AC%BE.jpg" alt="Alipay"></span></a><a class="button donate" href="https://www.buymeacoffee.com/xiangxyawn" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Buy me a coffee</span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/images/%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/blog/Sora-authors/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Sora authors</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/blog/Transformer-Performance/"><span class="level-item">Transformer-Performance</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://xiang-cd.github.io/blog/sequence-parallel/';
+            this.page.identifier = 'blog/sequence-parallel/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'xxy-blog-1' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/images/%E5%8F%AF%E7%88%B1%E7%8E%84%E7%AD%96.png" alt="Chendong Xiang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Chendong Xiang</p><p class="is-size-6 is-block">AI Researcher</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">8</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">2</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">4</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/Xiang-cd" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/Xiang-cd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com/xiangxiaoyuaw"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="LinkedIn" href="https://www.linkedin.com/in/%E6%99%A8%E4%B8%9C-%E9%A1%B9-3401a0199/"><i class="fab fa-linkedin"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/thu-ml/CRM" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">CRM</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li><li><a class="level is-mobile" href="https://github.com/Xiang-cd/FeedFace" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">FeedFace</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li><li><a class="level is-mobile" href="https://cond-image-leak.github.io/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Cond Image Leak</span></span><span class="level-right"><span class="level-item tag">cond-image-leak.github.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/blog/"><span class="level-start"><span class="level-item">blog</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/life/"><span class="level-start"><span class="level-item">life</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-11-27T16:00:00.000Z">2024-11-28</time></p><p class="title"><a href="/blog/Emu3-practice/">Emu3-practice</a></p><p class="categories"><a href="/blog/">blog</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-10-21T16:00:00.000Z">2024-10-22</time></p><p class="title"><a href="/life/canada-visa/">加拿大签证记</a></p><p class="categories"><a href="/life/">life</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-09-30T16:00:00.000Z">2024-10-01</time></p><p class="title"><a href="/life/italy-visa/">意大利签证记</a></p><p class="categories"><a href="/life/">life</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-04-24T10:59:08.000Z">2024-04-24</time></p><p class="title"><a href="/blog/Sora-authors/">Sora authors</a></p><p class="categories"><a href="/blog/">blog</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-04-21T10:11:28.000Z">2024-04-21</time></p><p class="title"><a href="/blog/sequence-parallel/">sequence parallel</a></p><p class="categories"><a href="/blog/">blog</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2024/11/"><span class="level-start"><span class="level-item">November 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/10/"><span class="level-start"><span class="level-item">October 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/04/"><span class="level-start"><span class="level-item">April 2024</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/03/"><span class="level-start"><span class="level-item">March 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/career/"><span class="tag">career</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/mlsys/"><span class="tag">mlsys</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/model-arch/"><span class="tag">model arch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/test/"><span class="tag">test</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/images/%E5%8F%AF%E7%88%B1%E7%8E%84%E7%AD%96.png" alt="Chendong Xiang&#039;s Blog" height="28"></a><p class="is-size-7"><span>&copy; 2025 Chendong Xiang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>
